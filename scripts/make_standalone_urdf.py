@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 
+# This script is tested with following commands
+# ./make_standalone_urdf.py scout_description scout_mini
+# ./make_standalone_urdf.py scout_description scout_v2
+# ./make_standalone_urdf.py ranger_mini_v3 ranger_mini
+# ./make_standalone_urdf.py ranger_mini_v3 ranger_mini_gazebo
+# ./make_standalone_urdf.py ranger_mini_v3 ranger_mini_isaac
+
 import os
 import shutil
 import argparse
