@@ -1,10 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot name="ranger_mini_v3" xmlns:xacro="http://ros.org/wiki/xacro">
 
+  <!-- Chassis collision properties -->
+  <xacro:property name="chassis_x" value="0.74" />
+  <xacro:property name="chassis_y" value="0.5" />
+  <xacro:property name="chassis_z" value="0.1" />
+  <xacro:property name="chassis_z_origin" value="-0.04" />
+  <xacro:property name="chassis_sensor_x" value="0.02" />
+  <xacro:property name="chassis_sensor_y" value="0.25" />
+  <xacro:property name="chassis_sensor_z" value="0.1" />
+  <xacro:property name="chassis_sensor_x_origin" value="0.38" />
+  <xacro:property name="chassis_sensor_z_origin" value="-0.14" />
+
+  <!-- Wheel steering collision properties -->
+  <xacro:property name="wheel_steering_radius" value="0.035" />
+  <xacro:property name="wheel_steering_length" value="0.01" />
+
+  <!-- Wheel collision properties -->
+  <xacro:property name="wheel_radius" value="0.1" />
+  <xacro:property name="wheel_length" value="0.07" />
+
   <link name="base_link">
     <inertial>
-      <origin xyz="-0.0242698272228022 -0.0030308024613212 0.0544267444673498" rpy="0 0 0" />
       <mass value="10" />
+      <origin xyz="-0.0242698272228022 -0.0030308024613212 0.0544267444673498" rpy="0 0 0" />
       <inertia ixx="0.1354" ixy="0.0" ixz="0.0" iyy="0.2417" iyz="0.0" izz="0.3085" />
     </inertial>
     <visual>
@@ -17,17 +36,24 @@
       </material> -->
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="3.141593 0 0" />
+      <origin xyz="0 0 ${chassis_z_origin}" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://ranger_mini_v3/meshes/ranger_mini3.dae" />
+        <box size="${chassis_x} ${chassis_y} ${chassis_z}" />
+        <!-- <mesh filename="package://ranger_mini_v3/meshes/ranger_mini3.dae" /> -->
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="${chassis_sensor_x_origin} 0 ${chassis_sensor_z_origin}" rpy="0 0 0" />
+      <geometry>
+        <box size="${chassis_sensor_x} ${chassis_sensor_y} ${chassis_sensor_z}" />
       </geometry>
     </collision>
   </link>
 
   <link name="fr_steering_wheel_link">
     <inertial>
-      <origin xyz="1.8493E-05 1.2713E-06 0.043679" rpy="0 0 0" />
       <mass value="1" />
+      <origin xyz="1.8493E-05 1.2713E-06 0.043679" rpy="0 0 0" />
       <inertia ixx="0.0063625" ixy="-1.0581E-07" ixz="-4.0831E-07" iyy="0.006363" iyz="-3.4944E-08" izz="0.010465" />
     </inertial>
     <visual>
@@ -40,9 +66,10 @@
       </material> -->
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="1.570796 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_steering.dae" />
+        <cylinder radius="${wheel_steering_radius}" length="${wheel_steering_length}" />
+        <!-- <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_steering.dae" /> -->
       </geometry>
     </collision>
   </link>
@@ -52,7 +79,7 @@
     <parent link="base_link" />
     <child link="fr_steering_wheel_link" />
     <axis xyz="0 0 -1" />
-    <limit effort="5" velocity="6.28" lower="-2.1" upper="2.1" />
+    <limit effort="5" velocity="6.28" lower="-2.094" upper="2.094" />
   </joint>
 
   <link name="fr_wheel_link">
@@ -70,7 +97,9 @@
     <collision>
       <origin xyz="0 0 0" rpy="1.570796 0 0" />
       <geometry>
-        <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_tyre.dae" />
+        <cylinder radius="0.10" length="0.07" />
+        <cylinder radius="${wheel_radius}" length="${wheel_length}" />
+        <!-- <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_tyre.dae" /> -->
       </geometry>
       <contact>
         <ode>
@@ -89,8 +118,8 @@
 
   <link name="fl_steering_wheel_link">
     <inertial>
-      <origin xyz="-0.0017956 -9.6304E-08 0.043642" rpy="0 0 0" />
       <mass value="1" />
+      <origin xyz="-0.0017956 -9.6304E-08 0.043642" rpy="0 0 0" />
       <inertia ixx="0.0063695" ixy="-2.1067E-08" ixz="-0.00016867" iyy="0.006363" iyz="-1.0301E-08" izz="0.010458" />
     </inertial>
     <visual>
@@ -103,9 +132,10 @@
       </material> -->
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="1.570796 0 3.141593" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_steering.dae" />
+        <cylinder radius="${wheel_steering_radius}" length="${wheel_steering_length}" />
+        <!-- <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_steering.dae" /> -->
       </geometry>
     </collision>
   </link>
@@ -115,7 +145,7 @@
     <parent link="base_link" />
     <child link="fl_steering_wheel_link" />
     <axis xyz="0 0 -1" />
-    <limit effort="5" velocity="6.28" lower="-2.1" upper="2.1" />
+    <limit effort="5" velocity="6.28" lower="-2.094" upper="2.094" />
   </joint>
 
   <link name="fl_wheel_link">
@@ -133,7 +163,8 @@
     <collision>
       <origin xyz="0 0 0" rpy="-1.570796 0 0" />
       <geometry>
-        <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_tyre.dae" />
+        <cylinder radius="${wheel_radius}" length="${wheel_length}" />
+        <!-- <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_tyre.dae" /> -->
       </geometry>
       <contact>
         <ode>
@@ -152,8 +183,8 @@
 
   <link name="rl_steering_wheel_link">
     <inertial>
-      <origin xyz="-0.00017093 6.1255E-08 0.043678" rpy="0 0 0" />
       <mass value="1" />
+      <origin xyz="-0.00017093 6.1255E-08 0.043678" rpy="0 0 0" />
       <inertia ixx="0.0063627" ixy="-2.1069E-08" ixz="-1.587E-05" iyy="0.006363" iyz="9.3201E-09" izz="0.010465" />
     </inertial>
     <visual>
@@ -166,9 +197,10 @@
       </material> -->
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="1.570796 0.0 3.141593" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_steering.dae" />
+        <cylinder radius="${wheel_steering_radius}" length="${wheel_steering_length}" />
+        <!-- <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_steering.dae" /> -->
       </geometry>
     </collision>
   </link>
@@ -178,7 +210,7 @@
     <parent link="base_link" />
     <child link="rl_steering_wheel_link" />
     <axis xyz="0 0 -1" />
-    <limit effort="5" velocity="6.28" lower="-2.1" upper="2.1" />
+    <limit effort="5" velocity="6.28" lower="-2.094" upper="2.094" />
   </joint>
 
   <link name="rl_wheel_link">
@@ -196,7 +228,8 @@
     <collision>
       <origin xyz="0 0 0" rpy="-1.570796 0 0" />
       <geometry>
-        <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_tyre.dae" />
+        <cylinder radius="${wheel_radius}" length="${wheel_length}" />
+        <!-- <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_tyre.dae" /> -->
       </geometry>
       <contact>
         <ode>
@@ -215,8 +248,8 @@
 
   <link name="rr_steering_wheel_link">
     <inertial>
-      <origin xyz="0.0 0.0 0.0" />
       <mass value="1" />
+      <origin xyz="0.0 0.0 0.0" />
       <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
     </inertial>
     <visual>
@@ -225,10 +258,9 @@
         <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_steering.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="1.570796 0 0" />
-      <geometry>
-        <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_steering.dae" />
+    <collision>01.570796 0 0" /> <geometry>
+        <cylinder radius="${wheel_steering_radius}" length="${wheel_steering_length}" />
+        <!-- <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_steering.dae" /> -->
       </geometry>
     </collision>
   </link>
@@ -238,7 +270,7 @@
     <parent link="base_link" />
     <child link="rr_steering_wheel_link" />
     <axis xyz="0 0 -1" rpy="0 0 0" />
-    <limit effort="5" velocity="6.28" lower="-2.1" upper="2.1" />
+    <limit effort="5" velocity="6.28" lower="-2.094" upper="2.094" />
   </joint>
 
   <link name="rr_wheel_link">
@@ -256,7 +288,8 @@
     <collision>
       <origin xyz="0 0 0" rpy="1.570796 0 0" />
       <geometry>
-        <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_tyre.dae" />
+        <cylinder radius="${wheel_radius}" length="${wheel_length}" />
+        <!-- <mesh filename="package://ranger_mini_v3/meshes/ranger_mini_v3_wheel_tyre.dae" /> -->
       </geometry>
       <contact>
         <ode>
@@ -360,5 +393,64 @@
       <mechanicalReduction>30</mechanicalReduction>
     </actuator>
   </transmission>
+
+  <!-- ros2_control Configuration -->
+  <ros2_control name="ranger_mini_control" type="system">
+    <hardware>
+      <plugin>topic_based_ros2_control/TopicBasedSystem</plugin>
+      <param name="joint_commands_topic">/robot_joint_command</param>
+      <param name="joint_states_topic">/robot_joint_states</param>
+      <param name="trigger_joint_command_threshold">0.001</param>
+      <param name="sum_wrapped_joint_states">true</param>
+    </hardware>
+    <joint name="fl_steering_joint">
+      <command_interface name="position" />
+      <command_interface name="velocity" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="fl_wheel">
+      <command_interface name="position" />
+      <command_interface name="velocity" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="fr_steering_joint">
+      <command_interface name="position" />
+      <command_interface name="velocity" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="fr_wheel">
+      <command_interface name="position" />
+      <command_interface name="velocity" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="rr_steering_joint">
+      <command_interface name="position" />
+      <command_interface name="velocity" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="rl_wheel">
+      <command_interface name="position" />
+      <command_interface name="velocity" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="rr_wheel">
+      <command_interface name="position" />
+      <command_interface name="velocity" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="rl_steering_joint">
+      <command_interface name="position" />
+      <command_interface name="velocity" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+  </ros2_control>
 
 </robot>
